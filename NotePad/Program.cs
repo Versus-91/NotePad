@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic.CompilerServices;
 using NotePad.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,21 @@ app.MapGet("/{id}", async (int id,TodoDb db) => id).AddEndpointFilter(async (con
     if (id > 10)
     {
         return Results.Problem("Id should be above 10");
+    }
+    return await next(context);
+} );
+app.MapPost("/", async (ToDo todo, TodoDb db) =>
+{
+    await db.AddAsync(todo);
+    await db.SaveChangesAsync();
+}).AddEndpointFilter(async (context, next) =>
+{
+    var todo = context.GetArgument<ToDo>(0);
+    
+    string validationError = Utilities.IsValid(todo);
+    if (!string.IsNullOrEmpty(validationError))
+    {
+        return Results.Problem("Todo item is invalid.");
     }
     return await next(context);
 } );
