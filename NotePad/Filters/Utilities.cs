@@ -1,9 +1,11 @@
-﻿namespace NotePad.Filters;
+﻿using NotePad.Models;
+
+namespace NotePad.Filters;
 
 
 public static class Utilities
 {
-    public static string IsValid(Todo td)
+    public static string IsValid(ToDo td)
     {
         if (td.Id < 0)
         {

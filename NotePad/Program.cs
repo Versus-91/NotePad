@@ -28,17 +28,7 @@ app.MapPost("/", async (ToDo todo, TodoDb db) =>
 {
     await db.AddAsync(todo);
     await db.SaveChangesAsync();
-}).AddEndpointFilter(async (context, next) =>
-{
-    var todo = context.GetArgument<ToDo>(0);
-    
-    string validationError = Utilities.IsValid(todo);
-    if (!string.IsNullOrEmpty(validationError))
-    {
-        return Results.Problem("Todo item is invalid.");
-    }
-    return await next(context);
-} );
+}).AddEndpointFilter<TodoIsValidFilter>();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

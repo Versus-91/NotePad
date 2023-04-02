@@ -1,4 +1,5 @@
-﻿using NotePad.Models;
+﻿using NotePad.Filters;
+using NotePad.Models;
 
 public class TodoIsValidFilter : IEndpointFilter
 {
