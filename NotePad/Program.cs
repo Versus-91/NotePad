@@ -12,7 +12,17 @@ builder.Services.AddDbContext<TodoDb>(opt => opt.UseInMemoryDatabase("TestDb"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var app = builder.Build();
-app.MapGet("/", () => "Note book Minimal API");
+
+app.MapGet("/", async (TodoDb db) => await db.Todos.ToListAsync());
+app.MapGet("/{id}", async (int id,TodoDb db) => id).AddEndpointFilter(async (context, next) =>
+{
+    var id = context.GetArgument<int>(0);
+    if (id > 10)
+    {
+        return Results.Problem("Id should be above 10");
+    }
+    return await next(context);
+} );
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
